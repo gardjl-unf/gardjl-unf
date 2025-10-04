@@ -27,47 +27,6 @@ I've been working on computers since I was a teenager. After a prior life as a r
 ## Verified badges
 
 <!--START_SECTION:badges-->
-<p align="left">
-  <a href="https://www.credly.com/org/ibm-skillsbuild/badge/enterprise-design-thinking-practitioner.1"><img src="badges/3e7b4dd8.png" alt="Enterprise Design Thinking Practitioner" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/ibm-garage-essentials"><img src="badges/a8ffdc7e.png" alt="IBM Garage Essentials" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/z-architecture-assembler-language-part-1-the-basics"><img src="badges/e0558b19.png" alt="z/Architecture Assembler Language - Part 1: The Basics" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/addi-essentials"><img src="badges/2ea123cf.png" alt="ADDI Essentials" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/z-architecture-assembler-language-part-2-machine-in"><img src="badges/2de36255.png" alt="z/Architecture Assembler Language - Part 2: Machine Instructions" height="88"></a>
-  <a href="https://www.credly.com/org/ibm-skillsbuild/badge/artificial-intelligence-fundamentals"><img src="badges/e98840e9.png" alt="Artificial Intelligence Fundamentals" height="88"></a>
-  <a href="https://www.credly.com/org/ibm-skillsbuild/badge/data-classification-and-summarization-using-ibm-gra"><img src="badges/945da0ba.png" alt="Data Classification and Summarization Using IBM Granite" height="88"></a>
-  <a href="https://www.credly.com/org/ibm-skillsbuild/badge/code-generation-and-optimization-using-ibm-granite"><img src="badges/c910eb63.png" alt="Code Generation and Optimization Using IBM Granite" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/basics-of-quantum-information"><img src="badges/5b4931a5.png" alt="Basics of Quantum Information" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/architecting-applications-with-ibm-z"><img src="badges/b470f7ce.png" alt="Architecting Applications with IBM Z" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/ims-diagnostics"><img src="badges/3f6b93e7.png" alt="IMS Diagnostics" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/ibm-cloud-technical-advocate-concepts-v2"><img src="badges/1271af6f.png" alt="IBM Cloud Technical Advocate Concepts V2" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/cloud-native-development-with-ibm-z-and-cloud-moder"><img src="badges/5f2dfbeb.png" alt="Cloud native development with IBM Z and Cloud Modernization Stack Fundamentals" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/ibm-cloud-technical-advocate-foundations-v2"><img src="badges/9bbee80a.png" alt="IBM Cloud Technical Advocate Foundations V2" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/ibm-developer-for-z-os-basics"><img src="badges/23242752.png" alt="IBM Developer for z/OS Basics" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/ims-fundamentals.1"><img src="badges/1838425c.png" alt="IMS Fundamentals" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/z-os-academy-debug-explorer"><img src="badges/2b997639.png" alt="z/OS Academy - Debug Explorer" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/networking-on-z-os-foundations"><img src="badges/63c4ddf4.png" alt="Networking on z/OS - Foundations" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/ibm-z-operational-log-and-data-analytics-foundation"><img src="badges/c5284eb7.png" alt="IBM Z Operational Log and Data Analytics - Foundations" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/introduction-to-z-os-commands-and-panels-on-ibm-z"><img src="badges/6718d5b5.png" alt="Introduction to z/OS Commands and Panels on IBM Z" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/z-os-network-security-foundations"><img src="badges/9ef8560e.png" alt="z/OS Network Security - Foundations" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/ibm-z-101-certificate.2"><img src="badges/70c6146d.png" alt="IBM Z 101 Certificate" height="88"></a>
-  <a href="https://www.credly.com/org/ibm-skillsbuild/badge/cybersecurity-fundamentals"><img src="badges/ac015831.png" alt="Cybersecurity Fundamentals" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/z-os-system-services-structure"><img src="badges/c385e6fd.png" alt="z/OS System Services Structure" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/tcp-ip-on-z-os-essentials-level-1"><img src="badges/7bd5d2e2.png" alt="TCP/IP on z/OS Essentials - Level 1" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/ibm-zsystems-cybersecurity-insights"><img src="badges/5f92b274.png" alt="IBM zSystems Cybersecurity Insights" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/ibm-z-os-security-essentials"><img src="badges/f17605c4.png" alt="IBM z/OS Security Essentials" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/z-os-rexx-programming"><img src="badges/2f9b59f5.png" alt="z/OS REXX Programming" height="88"></a>
-  <a href="https://www.credly.com/org/ibm-skillsbuild/badge/explore-emerging-tech.1"><img src="badges/d33975c0.png" alt="Explore Emerging Tech" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/cobol-programming-with-vscode"><img src="badges/4b0c5c2d.png" alt="COBOL Programming with VSCode" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/ibm-z-os-mainframe-practitioner"><img src="badges/c102c955.png" alt="IBM z/OS Mainframe Practitioner" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/introduction-to-system-programming-on-ibm-z"><img src="badges/039eff62.png" alt="Introduction to System Programming on IBM Z" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/introducing-z-os-unix-system-services"><img src="badges/192039c8.png" alt="Introducing z/OS UNIX System Services" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/introduction-to-ibm-z-os"><img src="badges/67e02e78.png" alt="Introduction to IBM z/OS" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/practical-introduction-to-quantum-safe-cryptography"><img src="badges/f7804e47.png" alt="Practical Introduction to Quantum-Safe Cryptography" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/modernize-applications-with-ibm-cics"><img src="badges/be06cf10.png" alt="Modernize Applications with IBM CICS" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/best-practices-for-building-container-images"><img src="badges/7c9ec3ad.png" alt="Best Practices for Building Container Images" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/ibm-z-xplore-all-star"><img src="badges/ab852e33.png" alt="IBM Z Xplore - All Star" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/ibm-z-xplore-advanced"><img src="badges/02c10ab7.png" alt="IBM Z Xplore - Advanced" height="88"></a>
-  <a href="https://www.credly.com/org/ibm/badge/ibm-z-xplore-concepts"><img src="badges/0ff6228a.png" alt="IBM Z Xplore - Concepts" height="88"></a>
-</p>
+
 <!--END_SECTION:badges-->
 
