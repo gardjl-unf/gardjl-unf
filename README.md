@@ -1,4 +1,4 @@
-Hi 👋 My name is Jason Gardner
+My name is Jason Gardner
 ==============================
 
 Masters of Computing and Information Sciences Student
