@@ -27,5 +27,8 @@ I've been working on computers since I was a teenager. After a prior life as a r
 ## Verified badges
 
 <!--START_SECTION:badges-->
+<p align="left">
+  
+</p>
 <!--END_SECTION:badges-->
 
