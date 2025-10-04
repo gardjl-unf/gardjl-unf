@@ -1,20 +1,19 @@
+# .github/workflows/credly-badges.yml
 name: Update Credly badges
 
 on:
   schedule:
-    - cron: "17 7 * * *" # daily at 07:17 UTC (adjust if you like)
+    - cron: "17 7 * * *"   # daily at 07:17 UTC
   workflow_dispatch:
 
 jobs:
   update-readme:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Badges - Readme
-        uses: pemtajo/badge-readme@v3
+      - name: Update README with Credly badges
+        uses: pemtajo/badge-readme@3.1.0   # or @main
         with:
-          # Your Credly profile slug from the URL you sent:
-          # https://www.credly.com/users/jason-gardner.a0afe0ad/badges
           CREDLY_USER: "jason-gardner.a0afe0ad"
-          README_FILE: "README.md"           # defaults to README.md
-          BADGE_SIZE: "110"                  # 110px icons (looks good on GH)
-          SORT_BY: "issued_at"               # newest first
+          NUMBER_LAST_BADGES: 0            # 0 = all badges
