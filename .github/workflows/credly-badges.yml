@@ -2,7 +2,7 @@ name: Update Credly badges
 
 on:
   schedule:
-    - cron: "0 7 * * *"
+    - cron: "0 7 * * *"   # daily
   workflow_dispatch:
 
 permissions:
@@ -14,74 +14,131 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install Playwright
+      - name: Fetch all Credly badges (JSON)
+        shell: bash
         run: |
-          npm i -y playwright
-          npx playwright install --with-deps chromium
+          set -euo pipefail
+          BASE="https://www.credly.com/users/jason-gardner.a0afe0ad/badges.json"
+          UA="Mozilla/5.0 (GitHubActions Badge Fetcher)"
+          page=1
+          echo "[]" > all_badges.json
 
-      - name: Render & inject badges
+          while :; do
+            url="${BASE}?page=${page}"
+            echo "Fetching ${url}"
+            # -L follow redirects, -f fail on HTTP errors, -S show errors
+            if ! curl -fsSL -A "$UA" "$url" -o "page.json"; then
+              echo "Stopping on fetch error/404"
+              break
+            fi
+
+            # If page is empty array or has no badges, stop
+            if python3 - <<'PY' ; then
+import json,sys
+data=json.load(open("page.json"))
+# Credly returns either a list or an object with 'data'
+if isinstance(data, list):
+    badges=data
+else:
+    badges=data.get("data") or data.get("badges") or []
+print(len(badges))
+PY
+            then
+              :
+            fi > count.txt
+
+            if [ "$(cat count.txt)" = "0" ]; then
+              echo "No more badges on page ${page}"
+              break
+            fi
+
+            python3 - <<'PY'
+import json,sys
+from pathlib import Path
+all_=json.load(open("all_badges.json"))
+page=json.load(open("page.json"))
+if isinstance(page, list):
+    badges=page
+else:
+    badges=page.get("data") or page.get("badges") or []
+all_.extend(badges)
+Path("all_badges.json").write_text(json.dumps(all_))
+PY
+
+            page=$((page+1))
+            # Safety cap to avoid infinite loops
+            if [ $page -gt 50 ]; then
+              echo "Hit page safety cap; stopping."
+              break
+            fi
+          done
+
+      - name: Render badges into README
+        shell: bash
         run: |
-          node - <<'JS'
-          const fs = require("fs");
-          const { chromium } = require("playwright");
+          set -euo pipefail
+          python3 - <<'PY'
+import json, re, datetime, html
+from pathlib import Path
 
-          (async () => {
-            const url = "https://www.credly.com/users/jason-gardner.a0afe0ad/badges";
-            const browser = await chromium.launch({ headless: true });
-            const page = await browser.newPage();
+data = json.load(open("all_badges.json"))
 
-            // Faster + reliable loading
-            await page.goto(url, { waitUntil: "domcontentloaded" });
+def get(d,*ks,default=None):
+    cur=d
+    for k in ks:
+        if cur is None: return default
+        cur = cur.get(k) if isinstance(cur,dict) else default
+    return cur if cur is not None else default
 
-            // Credly loads badges lazily; keep clicking "See all" / "Load more" if present
-            for (let i = 0; i < 20; i++) {
-              // wait a little for network/JS to populate
-              await page.waitForTimeout(800);
-              const more = await page.$('button:has-text("See all") , button:has-text("Load more")');
-              if (!more) break;
-              await more.click();
-            }
+items=[]
+for b in data:
+    # Issue date variants
+    issued = (get(b,"issued_at") or get(b,"issued_at_date")
+              or get(b,"created_at") or "")
+    try:
+        dt = datetime.datetime.fromisoformat(issued.replace("Z","+00:00"))
+    except Exception:
+        dt = datetime.datetime.min
 
-            // Give the page a final moment to settle
-            await page.waitForTimeout(1500);
+    # Links + images may be in top-level or under badge_template
+    link = (get(b,"url") or get(b,"share_url") or get(b,"public_url")
+            or get(b,"path") or get(b,"badge_url") or
+            get(b,"badge_template","url") or get(b,"badge_template","public_url"))
+    if link and link.startswith("/"):
+        link = "https://www.credly.com" + link
 
-            // Collect badges: anchor + image
-            const cells = await page.evaluate(() => {
-              // Image CDN hint + ensure we get clickable links
-              const anchors = Array.from(document.querySelectorAll('a[href*="/badges/"] img[src*="images.credly.com"]'))
-                .map(img => {
-                  const a = img.closest("a");
-                  if (!a) return null;
-                  const alt = (img.getAttribute("alt") || "Badge").replace(/"/g, "");
-                  const src = img.getAttribute("src");
-                  const href = a.getAttribute("href");
-                  if (!src || !href) return null;
-                  const link = href.startsWith("http") ? href : ("https://www.credly.com" + href);
-                  return `<a href="${link}"><img src="${src}" alt="${alt}" height="88"></a>`;
-                })
-                .filter(Boolean);
+    img  = (get(b,"image_url") or get(b,"badge_template","image_url"))
+    name = (get(b,"name") or get(b,"badge_template","name") or "Badge")
 
-              // De-dupe just in case
-              return [...new Set(anchors)];
-            });
+    # Filter out anything missing essentials
+    if not (link and img):
+        continue
 
-            const html = `<p align="left">\n  ${cells.join("\n  ")}\n</p>\n`;
+    items.append({"dt":dt,"link":link,"img":img,"name":name})
 
-            // Inject into README between markers
-            const readmePath = "README.md";
-            const readme = fs.readFileSync(readmePath, "utf8");
-            const pattern = /(<!--START_SECTION:badges-->)([\s\S]*?)(<!--END_SECTION:badges-->)/m;
-            const replaced = readme.replace(pattern, `$1\n${html}$3`);
-            fs.writeFileSync(readmePath, replaced, "utf8");
+# Sort newest → oldest and de-dupe by link
+items.sort(key=lambda x:x["dt"], reverse=True)
+seen=set(); uniq=[]
+for it in items:
+    if it["link"] in seen: continue
+    seen.add(it["link"]); uniq.append(it)
 
-            console.log(`Extracted ${cells.length} badges.`);
-            await browser.close();
-          })().catch(e => { console.error(e); process.exit(1); });
-          JS
+cells=[]
+for it in uniq:
+    alt = html.escape(it["name"], quote=True)
+    cells.append(f'<a href="{it["link"]}"><img src="{it["img"]}" alt="{alt}" height="88"></a>')
+
+html_block = "<p align=\"left\">\n  " + "\n  ".join(cells) + "\n</p>\n"
+
+# Inject between markers
+readme_path = Path("README.md")
+readme = readme_path.read_text(encoding="utf-8")
+pattern = r'(<!--START_SECTION:badges-->)([\s\S]*?)(<!--END_SECTION:badges-->)'
+new = re.sub(pattern, r'\1\n'+html_block+r'\3', readme, flags=re.S)
+readme_path.write_text(new, encoding="utf-8")
+
+print(f"Rendered {len(cells)} badges.")
+PY
 
       - name: Commit changes (if any)
         run: |
