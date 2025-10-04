@@ -1,5 +1,5 @@
 # .github/workflows/credly-badges.yml
-name: Credly Badges
+name: Credly Badges Updater
 
 on:
   workflow_dispatch:
@@ -17,15 +17,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # --- NEW: make sure we're up to date with remote before changing files
-      - name: Sync with remote main
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Fast-forward to origin/main (no local changes yet)
-          git fetch origin main
-          git checkout -B main origin/main
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
@@ -39,122 +30,114 @@ jobs:
           from urllib.error import HTTPError, URLError
 
           BASE = "https://www.credly.com/users/jason-gardner.a0afe0ad/badges.json"
-          UA = "Mozilla/5.0 (GitHubActions Credly Fetcher)"
+          UA   = "Mozilla/5.0 (GitHubActions Credly Fetcher)"
+          START = "<!--START_SECTION:badges-->"
+          END   = "<!--END_SECTION:badges-->"
 
           def fetch_all():
-              items = []
-              for page in range(1, 51):
-                  url = f"{BASE}?page={page}"
+              out=[]
+              for page in range(1,51):
+                  url=f"{BASE}?page={page}"
                   try:
-                      req = Request(url, headers={"User-Agent": UA})
-                      with urlopen(req, timeout=30) as resp:
-                          data = json.loads(resp.read().decode("utf-8"))
+                      req=Request(url, headers={"User-Agent":UA})
+                      with urlopen(req, timeout=30) as r:
+                          data=json.loads(r.read().decode("utf-8"))
                   except (HTTPError, URLError):
                       break
-                  badges = data if isinstance(data, list) else (data.get("data") or data.get("badges") or [])
-                  if not badges:
-                      break
-                  items.extend(badges)
-              return items
+                  items = data if isinstance(data,list) else (data.get("data") or data.get("badges") or [])
+                  if not items: break
+                  out.extend(items)
+              return out
 
-          def get(d, *ks, default=None):
-              cur = d
+          def get(d,*ks,default=None):
+              cur=d
               for k in ks:
-                  if not isinstance(cur, dict):
-                      return default
-                  cur = cur.get(k)
+                  if not isinstance(cur,dict): return default
+                  cur=cur.get(k)
               return default if cur is None else cur
 
-          def normalize_img(url: str) -> str:
-              if not url:
-                  return url
-              return re.sub(r"/size/\d+x\d+/", "/size/110x110/", url)
+          def normalize_img(u):
+              return re.sub(r"/size/\d+x\d+/", "/size/110x110/", u) if u else u
 
-          def download_image(url: str, dest_dir: Path) -> str:
-              dest_dir.mkdir(parents=True, exist_ok=True)
-              h = hashlib.sha1(url.encode("utf-8")).hexdigest()[:8]
-              ext = os.path.splitext(url.split("?")[0])[1].lower()
-              if ext not in [".png", ".jpg", ".jpeg", ".webp", ".gif"]:
-                  ext = ".png"
-              tmp_path = dest_dir / f"tmp-{h}{ext}"
-              final_path = dest_dir / f"{h}{ext}"
-              req = Request(url, headers={"User-Agent": UA})
-              with urlopen(req, timeout=30) as resp:
-                  data = resp.read()
-                  ctype = resp.headers.get("Content-Type","").lower()
-              if "jpeg" in ctype and ext not in [".jpg", ".jpeg"]:
-                  final_path = dest_dir / f"{h}.jpg"
-              elif "png" in ctype and ext != ".png":
-                  final_path = dest_dir / f"{h}.png"
-              elif "webp" in ctype and ext != ".webp":
-                  final_path = dest_dir / f"{h}.webp"
-              tmp_path.write_bytes(data)
-              if final_path.exists():
-                  if final_path.read_bytes() != data:
-                      final_path.write_bytes(data)
-                  tmp_path.unlink(missing_ok=True)
+          def download_image(url: str, dest: Path) -> str:
+              dest.mkdir(parents=True, exist_ok=True)
+              h=hashlib.sha1(url.encode()).hexdigest()[:8]
+              ext=os.path.splitext(url.split("?")[0])[1].lower()
+              if ext not in (".png",".jpg",".jpeg",".webp",".gif"): ext=".png"
+              tmp=dest/f"tmp-{h}{ext}"
+              out=dest/f"{h}{ext}"
+              req=Request(url, headers={"User-Agent":UA})
+              with urlopen(req, timeout=30) as r:
+                  data=r.read()
+                  ctype=(r.headers.get("Content-Type") or "").lower()
+              if "jpeg" in ctype and ext not in (".jpg",".jpeg"): out=dest/f"{h}.jpg"
+              elif "png" in ctype and ext!=".png": out=dest/f"{h}.png"
+              elif "webp" in ctype and ext!=".webp": out=dest/f"{h}.webp"
+              tmp.write_bytes(data)
+              if out.exists():
+                  if out.read_bytes()!=data:
+                      out.write_bytes(data)
+                  tmp.unlink(missing_ok=True)
               else:
-                  tmp_path.replace(final_path)
-              return f"badges/{final_path.name}"
+                  tmp.replace(out)
+              return f"badges/{out.name}"
 
+          # 1) Build new HTML
           raw = fetch_all()
-          items = []
+          items=[]
           for b in raw:
-              issued = get(b, "issued_at") or get(b, "issued_at_date") or get(b, "created_at") or ""
+              issued = get(b,"issued_at") or get(b,"issued_at_date") or get(b,"created_at") or ""
               try:
-                  dt = datetime.datetime.fromisoformat(issued.replace("Z", "+00:00"))
+                  dt=datetime.datetime.fromisoformat(issued.replace("Z","+00:00"))
               except Exception:
-                  dt = datetime.datetime.min
-
-              img  = get(b, "image_url") or get(b, "badge_template", "image_url")
-              img  = normalize_img(img)
-
-              bid = get(b, "id")
+                  dt=datetime.datetime.min
+              img = normalize_img(get(b,"image_url") or get(b,"badge_template","image_url"))
+              bid = get(b,"id")
               link = f"https://www.credly.com/badges/{bid}" if bid else None
+              name = get(b,"name") or get(b,"badge_template","name") or "Badge"
+              if img and link:
+                  items.append({"dt":dt,"img":img,"link":link,"name":name})
 
-              name = get(b, "name") or get(b, "badge_template", "name") or "Badge"
-
-              if link and img:
-                  items.append({"dt": dt, "link": link, "img": img, "name": name})
-
-          items.sort(key=lambda x: x["dt"], reverse=True)
-          seen, uniq = set(), []
+          items.sort(key=lambda x:x["dt"], reverse=True)
+          seen=set(); uniq=[]
           for it in items:
-              if it["link"] in seen:
-                  continue
-              seen.add(it["link"])
-              uniq.append(it)
+              if it["link"] in seen: continue
+              seen.add(it["link"]); uniq.append(it)
 
-          out_dir = Path("badges")
-          cells = []
+          cells=[]
+          outdir=Path("badges")
           for it in uniq:
-              local = download_image(it["img"], out_dir)
-              alt = html.escape(it["name"], quote=True)
-              cells.append(f'<a href="{it["link"]}"><img src="{local}" alt="{alt}" height="88"></a>')
+              local=download_image(it["img"], outdir)
+              cells.append(f'<a href="{it["link"]}"><img src="{local}" alt="{html.escape(it["name"],quote=True)}" height="88"></a>')
+          new_block = "<p align=\"left\">\n  " + "\n  ".join(cells) + "\n</p>\n"
 
-          html_block = "<p align=\"left\">\n  " + "\n  ".join(cells) + "\n</p>\n"
-
-          rp = Path("README.md")
-          readme = rp.read_text(encoding="utf-8")
-          pattern = re.compile(r'(<!--START_SECTION:badges-->)([\s\S]*?)(<!--END_SECTION:badges-->)', re.S)
-          if pattern.search(readme):
-              new = pattern.sub(r'\1\n' + html_block + r'\3', readme)
+          # 2) Replace between markers (unconditional)
+          rp=Path("README.md")
+          txt=rp.read_text(encoding="utf-8-sig")
+          s=txt.find(START); e=txt.find(END)
+          if s==-1 or e==-1 or e<s:
+              # Append if markers missing
+              txt = txt.rstrip()+"\n\n## Verified badges\n"+START+"\n"+new_block+END+"\n"
           else:
-              new = readme.rstrip() + "\n\n## Verified badges\n<!--START_SECTION:badges-->\n" + html_block + "<!--END_SECTION:badges-->\n"
-          rp.write_text(new, encoding="utf-8")
-          print(f"Rendered {len(cells)} badges (local images, id-linked).")
+              s_end = s + len(START)
+              txt = txt[:s_end] + "\n" + new_block + txt[e:]
+          rp.write_text(txt, encoding="utf-8")
+          print(f"BADGES: rendered={len(cells)} (wrote README.md)")
           PY
 
-      - name: Run updater
-        run: python3 credly_update.py
-
-      - name: Commit & push
+      - name: Run, show diff, commit, push
         run: |
+          set -e
+          python3 credly_update.py
+          echo "----- README diff preview -----"
+          git diff -- README.md | sed -n '1,200p' || true
+          echo "--------------------------------"
           git add README.md badges || true
           if git diff --cached --quiet; then
-            echo "No README or image changes."
+            echo "No staged changes. (README may already match.)"
             exit 0
           fi
-          # Rebase on the latest remote just in case another push landed during this job
+          # Rebase in case remote changed after checkout
           git pull --rebase --autostash origin main || true
+          git commit -m "chore: update Credly badges"
           git push origin HEAD:main
