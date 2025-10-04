@@ -23,3 +23,9 @@ I've been working on computers since I was a teenager. After a prior life as a r
 <b>My GitHub Stats</b>
 
 <a href="http://www.github.com/gardjl-unf"><img src="https://github-readme-stats.vercel.app/api?username=gardjl-unf&show_icons=true&hide=stars,contribs&count_private=true&title_color=0891b2&text_color=ffffff&icon_color=0891b2&bg_color=1c1917&hide_border=true&show_icons=true" alt="gardjl-unf's GitHub stats" /></a>
+
+## Verified badges
+
+<!--START_SECTION:badges-->
+<!--END_SECTION:badges-->
+
