@@ -1,19 +1,101 @@
-# .github/workflows/credly-badges.yml
 name: Update Credly badges
 
 on:
   schedule:
-    - cron: "17 7 * * *"   # daily at 07:17 UTC
+    - cron: "00 7 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  update-readme:
+  update:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Update README with Credly badges
-        uses: pemtajo/badge-readme@3.1.0   # or @main
-        with:
-          CREDLY_USER: "jason-gardner.a0afe0ad"
-          NUMBER_LAST_BADGES: 0            # 0 = all badges
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Fetch Credly badges JSON
+        run: |
+          set -euo pipefail
+          # Public JSON endpoint; works without API keys for public profiles
+          curl -fsSL "https://www.credly.com/users/jason-gardner.a0afe0ad/badges.json" -o badges.json
+
+      - name: Render badges to markdown
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, sys, re, pathlib, datetime
+          from urllib.parse import urlparse
+
+          # Load JSON (be robust to different shapes)
+          data = json.load(open("badges.json"))
+          if isinstance(data, dict):
+              badges = data.get("data") or data.get("badges") or []
+          elif isinstance(data, list):
+              badges = data
+          else:
+              badges = []
+
+          def get(d, *keys, default=None):
+              cur = d
+              for k in keys:
+                  if cur is None: return default
+                  cur = cur.get(k) if isinstance(cur, dict) else None
+              return cur if cur is not None else default
+
+          # Normalize fields
+          items = []
+          for b in badges:
+              issued = get(b, "issued_at") or get(b, "created_at") or ""
+              # try parsing date for sorting
+              try:
+                  dt = datetime.datetime.fromisoformat(issued.replace("Z","+00:00"))
+              except Exception:
+                  dt = datetime.datetime.min
+              link = get(b, "url") or get(b, "share_url") or get(b, "badge_url") or \
+                     get(b, "public_url") or get(b, "path")
+              # build full link if “path” is relative
+              if link and link.startswith("/"):
+                  link = "https://www.credly.com" + link
+              img = get(b, "image_url") or get(b, "badge_template", "image_url")
+              name = get(b, "name") or get(b, "badge_template", "name") or "Badge"
+              items.append({"dt": dt, "link": link, "img": img, "name": name})
+
+          # Sort newest first
+          items.sort(key=lambda x: x["dt"], reverse=True)
+
+          # Build a simple responsive grid of linked images
+          cells = []
+          for it in items:
+              if not it["img"] or not it["link"]: 
+                  continue
+              alt = it["name"].replace('"','')
+              cells.append(
+                  f'<a href="{it["link"]}"><img src="{it["img"]}" alt="{alt}" height="88"></a>'
+              )
+
+          out = "<p align=\"left\">\n  " + "\n  ".join(cells) + "\n</p>\n"
+          pathlib.Path("BADGES_RENDERED.md").write_text(out, encoding="utf-8")
+
+          # Inject between markers in README.md
+          readme = pathlib.Path("README.md").read_text(encoding="utf-8")
+          pattern = r"(<!--START_SECTION:badges-->)(.*?)(<!--END_SECTION:badges-->)"
+          repl = r"\1\n" + out + r"\3"
+          new = re.sub(pattern, repl, readme, flags=re.S)
+          pathlib.Path("README.md").write_text(new, encoding="utf-8")
+          PY
+
+      - name: Commit changes (if any)
+        run: |
+          set -e
+          if git diff --quiet README.md; then
+            echo "No README changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "chore: update Credly badges"
+          git push
