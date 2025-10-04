@@ -3,7 +3,7 @@ name: Credly Badges
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 7 * * *'  # daily at 07:00 UTC
+    - cron: '0 7 * * *'  # daily at 07:07 UTC
 
 permissions:
   contents: write
@@ -18,48 +18,102 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Fetch all Credly pages
+      - name: Create updater script
         run: |
-          set -euo pipefail
-          BASE="https://www.credly.com/users/jason-gardner.a0afe0ad/badges.json"
-          UA="Mozilla/5.0 (GitHubActions Credly Fetcher)"
-          rm -f badges_page_*.json all_badges.json || true
+          cat > credly_update.py << 'PY'
+          import json, re, datetime, html
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          from urllib.error import HTTPError, URLError
 
-          for page in $(seq 1 50); do
-            URL="${BASE}?page=${page}"
-            echo "Fetching $URL"
-            code="$(curl -sS -L -A "$UA" -w '%{http_code}' -o "badges_page_${page}.json" "$URL" || true)"
-            if [ "$code" != "200" ]; then
-              echo "HTTP $code; stopping."
-              rm -f "badges_page_${page}.json"
-              break
-            fi
-            # stop if empty list or empty data array
-            python - <<'PY'
-import json, sys, pathlib
-p = json.load(open(sys.argv[1]))
-n = len(p) if isinstance(p, list) else len(p.get("data") or p.get("badges") or [])
-print(n)
-PY "badges_page_${page}.json" > count.txt
-            if [ "$(cat count.txt)" = "0" ]; then
-              echo "No items on page ${page}; stopping."
-              rm -f "badges_page_${page}.json"
-              break
-            fi
-          done
+          BASE = "https://www.credly.com/users/jason-gardner.a0afe0ad/badges.json"
+          UA = "Mozilla/5.0 (GitHubActions Credly Fetcher)"
 
-          # Combine pages
-          python - <<'PY'
-import json, glob
-all_items = []
-for path in sorted(glob.glob("badges_page_*.json")):
-    p = json.load(open(path))
-    if isinstance(p, list):
-        all_items.extend(p)
-    else:
-        all_items.extend(p.get("data") or p.get("badges") or [])
-json.dump(all_items, open("all_badges.json","w"))
-print(f"Total badges: {len(all_items)}")
-PY
+          def fetch_all():
+              items = []
+              for page in range(1, 51):
+                  url = f"{BASE}?page={page}"
+                  try:
+                      req = Request(url, headers={"User-Agent": UA})
+                      with urlopen(req, timeout=30) as resp:
+                          data = json.loads(resp.read().decode("utf-8"))
+                  except HTTPError:
+                      break
+                  except URLError:
+                      break
+                  badges = data if isinstance(data, list) else (data.get("data") or data.get("badges") or [])
+                  if not badges:
+                      break
+                  items.extend(badges)
+              return items
 
-      - name: Render badges into READ
+          def get(d, *ks, default=None):
+              cur = d
+              for k in ks:
+                  if not isinstance(cur, dict):
+                      return default
+                  cur = cur.get(k)
+              return default if cur is None else cur
+
+          raw = fetch_all()
+          items = []
+          for b in raw:
+              issued = get(b, "issued_at") or get(b, "issued_at_date") or get(b, "created_at") or ""
+              try:
+                  dt = datetime.datetime.fromisoformat(issued.replace("Z", "+00:00"))
+              except Exception:
+                  dt = datetime.datetime.min
+
+              link = (get(b, "url") or get(b, "share_url") or get(b, "public_url")
+                      or get(b, "path") or get(b, "badge_url")
+                      or get(b, "badge_template", "url") or get(b, "badge_template", "public_url"))
+              if link and link.startswith("/"):
+                  link = "https://www.credly.com" + link
+
+              img  = get(b, "image_url") or get(b, "badge_template", "image_url")
+              name = get(b, "name") or get(b, "badge_template", "name") or "Badge"
+
+              if link and img:
+                  items.append({"dt": dt, "link": link, "img": img, "name": name})
+
+          # newest first, de-dupe by link
+          items.sort(key=lambda x: x["dt"], reverse=True)
+          seen, uniq = set(), []
+          for it in items:
+              if it["link"] in seen:
+                  continue
+              seen.add(it["link"])
+              uniq.append(it)
+
+          cells = [
+              f'<a href="{it["link"]}"><img src="{it["img"]}" alt="{html.escape(it["name"], quote=True)}" height="88"></a>'
+              for it in uniq
+          ]
+          html_block = "<p align=\"left\">\n  " + "\n  ".join(cells) + "\n</p>\n"
+
+          rp = Path("README.md")
+          readme = rp.read_text(encoding="utf-8")
+          pattern = re.compile(r'(<!--START_SECTION:badges-->)([\s\S]*?)(<!--END_SECTION:badges-->)', re.S)
+          if pattern.search(readme):
+              new = pattern.sub(r'\1\n' + html_block + r'\3', readme)
+          else:
+              new = readme.rstrip() + "\n\n## Verified badges\n<!--START_SECTION:badges-->\n" + html_block + "<!--END_SECTION:badges-->\n"
+
+          rp.write_text(new, encoding="utf-8")
+          print(f"Rendered {len(cells)} badges.")
+          PY
+
+      - name: Run updater
+        run: python3 credly_update.py
+
+      - name: Commit changes (if any)
+        run: |
+          if git diff --quiet README.md; then
+            echo "No README changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "chore: update Credly badges"
+          git push
