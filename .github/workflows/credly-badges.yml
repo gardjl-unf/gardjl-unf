@@ -1,3 +1,4 @@
+# .github/workflows/credly-badges.yml
 name: Credly Badges
 
 on:
@@ -13,6 +14,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # --- NEW: make sure we're up to date with remote before changing files
+      - name: Sync with remote main
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Fast-forward to origin/main (no local changes yet)
+          git fetch origin main
+          git checkout -B main origin/main
 
       - uses: actions/setup-python@v5
         with:
@@ -97,15 +109,8 @@ jobs:
               img  = get(b, "image_url") or get(b, "badge_template", "image_url")
               img  = normalize_img(img)
 
-              # Force link to /badges/{id}
               bid = get(b, "id")
-              link = f"https://www.credly.com/badges/{bid}" if bid else (
-                  get(b, "url") or get(b, "share_url") or get(b, "public_url")
-                  or get(b, "path") or get(b, "badge_url")
-                  or get(b, "badge_template", "url") or get(b, "badge_template", "public_url")
-              )
-              if link and isinstance(link, str) and link.startswith("/"):
-                  link = "https://www.credly.com" + link
+              link = f"https://www.credly.com/badges/{bid}" if bid else None
 
               name = get(b, "name") or get(b, "badge_template", "name") or "Badge"
 
@@ -143,14 +148,13 @@ jobs:
       - name: Run updater
         run: python3 credly_update.py
 
-      - name: Commit changes (if any)
+      - name: Commit & push
         run: |
           git add README.md badges || true
           if git diff --cached --quiet; then
             echo "No README or image changes."
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore: update Credly badges"
-          git push
+          # Rebase on the latest remote just in case another push landed during this job
+          git pull --rebase --autostash origin main || true
+          git push origin HEAD:main
