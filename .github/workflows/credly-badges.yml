@@ -1,5 +1,5 @@
 # .github/workflows/credly-badges.yml
-name: Credly Badges Updater
+name: Credly Badges
 
 on:
   workflow_dispatch:
@@ -116,7 +116,6 @@ jobs:
           txt=rp.read_text(encoding="utf-8-sig")
           s=txt.find(START); e=txt.find(END)
           if s==-1 or e==-1 or e<s:
-              # Append if markers missing
               txt = txt.rstrip()+"\n\n## Verified badges\n"+START+"\n"+new_block+END+"\n"
           else:
               s_end = s + len(START)
@@ -129,14 +128,22 @@ jobs:
         run: |
           set -e
           python3 credly_update.py
+
           echo "----- README diff preview -----"
           git diff -- README.md | sed -n '1,200p' || true
           echo "--------------------------------"
+
+          # Configure bot identity (local, not global)
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
           git add README.md badges || true
           if git diff --cached --quiet; then
             echo "No staged changes. (README may already match.)"
             exit 0
           fi
+
           # Rebase in case remote changed after checkout
           git pull --rebase --autostash origin main || true
           git commit -m "chore: update Credly badges"
