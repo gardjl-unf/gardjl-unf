@@ -1,9 +1,9 @@
-name: Update Credly badges
+name: Credly Badges
 
 on:
-  schedule:
-    - cron: "0 7 * * *"   # daily
   workflow_dispatch:
+  schedule:
+    - cron: '0 7 * * *'  # daily at 07:00 UTC
 
 permissions:
   contents: write
@@ -14,140 +14,52 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch all Credly badges (JSON)
-        shell: bash
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Fetch all Credly pages
         run: |
           set -euo pipefail
           BASE="https://www.credly.com/users/jason-gardner.a0afe0ad/badges.json"
-          UA="Mozilla/5.0 (GitHubActions Badge Fetcher)"
-          page=1
-          echo "[]" > all_badges.json
+          UA="Mozilla/5.0 (GitHubActions Credly Fetcher)"
+          rm -f badges_page_*.json all_badges.json || true
 
-          while :; do
-            url="${BASE}?page=${page}"
-            echo "Fetching ${url}"
-            # -L follow redirects, -f fail on HTTP errors, -S show errors
-            if ! curl -fsSL -A "$UA" "$url" -o "page.json"; then
-              echo "Stopping on fetch error/404"
+          for page in $(seq 1 50); do
+            URL="${BASE}?page=${page}"
+            echo "Fetching $URL"
+            code="$(curl -sS -L -A "$UA" -w '%{http_code}' -o "badges_page_${page}.json" "$URL" || true)"
+            if [ "$code" != "200" ]; then
+              echo "HTTP $code; stopping."
+              rm -f "badges_page_${page}.json"
               break
             fi
-
-            # If page is empty array or has no badges, stop
-            if python3 - <<'PY' ; then
-import json,sys
-data=json.load(open("page.json"))
-# Credly returns either a list or an object with 'data'
-if isinstance(data, list):
-    badges=data
-else:
-    badges=data.get("data") or data.get("badges") or []
-print(len(badges))
-PY
-            then
-              :
-            fi > count.txt
-
+            # stop if empty list or empty data array
+            python - <<'PY'
+import json, sys, pathlib
+p = json.load(open(sys.argv[1]))
+n = len(p) if isinstance(p, list) else len(p.get("data") or p.get("badges") or [])
+print(n)
+PY "badges_page_${page}.json" > count.txt
             if [ "$(cat count.txt)" = "0" ]; then
-              echo "No more badges on page ${page}"
-              break
-            fi
-
-            python3 - <<'PY'
-import json,sys
-from pathlib import Path
-all_=json.load(open("all_badges.json"))
-page=json.load(open("page.json"))
-if isinstance(page, list):
-    badges=page
-else:
-    badges=page.get("data") or page.get("badges") or []
-all_.extend(badges)
-Path("all_badges.json").write_text(json.dumps(all_))
-PY
-
-            page=$((page+1))
-            # Safety cap to avoid infinite loops
-            if [ $page -gt 50 ]; then
-              echo "Hit page safety cap; stopping."
+              echo "No items on page ${page}; stopping."
+              rm -f "badges_page_${page}.json"
               break
             fi
           done
 
-      - name: Render badges into README
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-import json, re, datetime, html
-from pathlib import Path
-
-data = json.load(open("all_badges.json"))
-
-def get(d,*ks,default=None):
-    cur=d
-    for k in ks:
-        if cur is None: return default
-        cur = cur.get(k) if isinstance(cur,dict) else default
-    return cur if cur is not None else default
-
-items=[]
-for b in data:
-    # Issue date variants
-    issued = (get(b,"issued_at") or get(b,"issued_at_date")
-              or get(b,"created_at") or "")
-    try:
-        dt = datetime.datetime.fromisoformat(issued.replace("Z","+00:00"))
-    except Exception:
-        dt = datetime.datetime.min
-
-    # Links + images may be in top-level or under badge_template
-    link = (get(b,"url") or get(b,"share_url") or get(b,"public_url")
-            or get(b,"path") or get(b,"badge_url") or
-            get(b,"badge_template","url") or get(b,"badge_template","public_url"))
-    if link and link.startswith("/"):
-        link = "https://www.credly.com" + link
-
-    img  = (get(b,"image_url") or get(b,"badge_template","image_url"))
-    name = (get(b,"name") or get(b,"badge_template","name") or "Badge")
-
-    # Filter out anything missing essentials
-    if not (link and img):
-        continue
-
-    items.append({"dt":dt,"link":link,"img":img,"name":name})
-
-# Sort newest → oldest and de-dupe by link
-items.sort(key=lambda x:x["dt"], reverse=True)
-seen=set(); uniq=[]
-for it in items:
-    if it["link"] in seen: continue
-    seen.add(it["link"]); uniq.append(it)
-
-cells=[]
-for it in uniq:
-    alt = html.escape(it["name"], quote=True)
-    cells.append(f'<a href="{it["link"]}"><img src="{it["img"]}" alt="{alt}" height="88"></a>')
-
-html_block = "<p align=\"left\">\n  " + "\n  ".join(cells) + "\n</p>\n"
-
-# Inject between markers
-readme_path = Path("README.md")
-readme = readme_path.read_text(encoding="utf-8")
-pattern = r'(<!--START_SECTION:badges-->)([\s\S]*?)(<!--END_SECTION:badges-->)'
-new = re.sub(pattern, r'\1\n'+html_block+r'\3', readme, flags=re.S)
-readme_path.write_text(new, encoding="utf-8")
-
-print(f"Rendered {len(cells)} badges.")
+          # Combine pages
+          python - <<'PY'
+import json, glob
+all_items = []
+for path in sorted(glob.glob("badges_page_*.json")):
+    p = json.load(open(path))
+    if isinstance(p, list):
+        all_items.extend(p)
+    else:
+        all_items.extend(p.get("data") or p.get("badges") or [])
+json.dump(all_items, open("all_badges.json","w"))
+print(f"Total badges: {len(all_items)}")
 PY
 
-      - name: Commit changes (if any)
-        run: |
-          if git diff --quiet README.md; then
-            echo "No README changes."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          git commit -m "chore: update Credly badges"
-          git push
+      - name: Render badges into READ
