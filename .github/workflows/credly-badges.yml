@@ -3,7 +3,7 @@ name: Credly Badges
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 7 * * *'  # daily at 07:00 UTC
+    - cron: '0 7 * * *'
 
 permissions:
   contents: write
@@ -21,7 +21,7 @@ jobs:
       - name: Create updater script
         run: |
           cat > credly_update.py << 'PY'
-          import json, re, datetime, html
+          import json, re, datetime, html, os, hashlib, mimetypes
           from pathlib import Path
           from urllib.request import Request, urlopen
           from urllib.error import HTTPError, URLError
@@ -54,13 +54,50 @@ jobs:
               return default if cur is None else cur
 
           def normalize_img(url: str) -> str:
-              """
-              Keep Credly CDN URL and normalize to 110x110 if the path has a /size/<WxH>/ segment.
-              We DO NOT rewrite to GitHub camo; we keep Credly's image_url as requested.
-              """
               if not url:
                   return url
               return re.sub(r"/size/\d+x\d+/", "/size/110x110/", url)
+
+          def safe_name(s: str) -> str:
+              s = re.sub(r"[^A-Za-z0-9._-]+", "_", s).strip("_")
+              return s or "badge"
+
+          def download_image(url: str, dest_dir: Path) -> str:
+              """Download image, return relative path like 'badges/<file>'."""
+              dest_dir.mkdir(parents=True, exist_ok=True)
+              # Use a stable filename: <sanitized-name>-<sha8>.<ext>
+              # We’ll infer ext from content-type if possible.
+              h = hashlib.sha1(url.encode("utf-8")).hexdigest()[:8]
+              # Guess ext from URL; may be .png or .jpg
+              ext = os.path.splitext(url.split("?")[0])[1].lower()
+              if ext not in [".png", ".jpg", ".jpeg", ".webp", ".gif"]:
+                  ext = ".png"
+              # Temp filename first
+              tmp_path = dest_dir / f"tmp-{h}{ext}"
+              final_path = dest_dir / f"{h}{ext}"
+
+              req = Request(url, headers={"User-Agent": UA})
+              with urlopen(req, timeout=30) as resp:
+                  data = resp.read()
+                  ctype = resp.headers.get("Content-Type","").lower()
+              # If content-type implies a different ext, fix it
+              if "jpeg" in ctype and ext not in [".jpg", ".jpeg"]:
+                  final_path = dest_dir / f"{h}.jpg"
+              elif "png" in ctype and ext != ".png":
+                  final_path = dest_dir / f"{h}.png"
+              elif "webp" in ctype and ext != ".webp":
+                  final_path = dest_dir / f"{h}.webp"
+
+              tmp_path.write_bytes(data)
+              if final_path.exists():
+                  # If identical, keep existing; else overwrite
+                  if final_path.read_bytes() != data:
+                      final_path.write_bytes(data)
+                  tmp_path.unlink(missing_ok=True)
+              else:
+                  tmp_path.replace(final_path)
+
+              return f"badges/{final_path.name}"
 
           raw = fetch_all()
           items = []
@@ -71,11 +108,9 @@ jobs:
               except Exception:
                   dt = datetime.datetime.min
 
-              # Prefer image_url from the badge JSON; only fallback to template if missing.
               img  = get(b, "image_url") or get(b, "badge_template", "image_url")
               img  = normalize_img(img)
 
-              # Link to the public badge page; build absolute if needed.
               link = (get(b, "url") or get(b, "share_url") or get(b, "public_url")
                       or get(b, "path") or get(b, "badge_url")
                       or get(b, "badge_template", "url") or get(b, "badge_template", "public_url"))
@@ -96,10 +131,15 @@ jobs:
               seen.add(it["link"])
               uniq.append(it)
 
-          cells = [
-              f'<a href="{it["link"]}"><img src="{it["img"]}" alt="{html.escape(it["name"], quote=True)}" height="88"></a>'
-              for it in uniq
-          ]
+          # Download images and switch to local paths
+          out_dir = Path("badges")
+          cells = []
+          for it in uniq:
+              local = download_image(it["img"], out_dir)
+              alt = html.escape(it["name"], quote=True)
+              # local relative path prevents camo proxying
+              cells.append(f'<a href="{it["link"]}"><img src="{local}" alt="{alt}" height="88"></a>')
+
           html_block = "<p align=\"left\">\n  " + "\n  ".join(cells) + "\n</p>\n"
 
           rp = Path("README.md")
@@ -109,9 +149,8 @@ jobs:
               new = pattern.sub(r'\1\n' + html_block + r'\3', readme)
           else:
               new = readme.rstrip() + "\n\n## Verified badges\n<!--START_SECTION:badges-->\n" + html_block + "<!--END_SECTION:badges-->\n"
-
           rp.write_text(new, encoding="utf-8")
-          print(f"Rendered {len(cells)} badges.")
+          print(f"Rendered {len(cells)} badges (local images).")
           PY
 
       - name: Run updater
@@ -119,12 +158,13 @@ jobs:
 
       - name: Commit changes (if any)
         run: |
-          if git diff --quiet README.md; then
-            echo "No README changes."
+          # Add README and any new/changed images
+          git add README.md badges || true
+          if git diff --cached --quiet; then
+            echo "No README or image changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          git commit -m "chore: update Credly badges (use image_url)"
+          git commit -m "chore: update Credly badges (local images to avoid camo)"
           git push
