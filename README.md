@@ -28,6 +28,7 @@ I've been working on computers since I was a teenager. After a prior life as a r
 
 <!--START_SECTION:badges-->
 <p align="left">
+  <a href="https://www.credly.com/badges/5212c05a-ada1-494f-9496-b4ff62590d94"><img src="badges/1e918c1f.png" alt="Artificial Intelligence Fundamentals with Capstone Project" height="88"></a>
   <a href="https://www.credly.com/badges/357d4399-8cd4-485a-b217-e30518e87db3"><img src="badges/3e7b4dd8.png" alt="Enterprise Design Thinking Practitioner" height="88"></a>
   <a href="https://www.credly.com/badges/e15468db-c158-45a7-bbe6-fe160086dc01"><img src="badges/a8ffdc7e.png" alt="IBM Garage Essentials" height="88"></a>
   <a href="https://www.credly.com/badges/c2c9bd1a-5a55-410d-a1d6-7d63607fd8c4"><img src="badges/e0558b19.png" alt="z/Architecture Assembler Language - Part 1: The Basics" height="88"></a>
