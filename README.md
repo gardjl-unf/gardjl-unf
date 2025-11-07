@@ -28,6 +28,14 @@ I've been working on computers since I was a teenager. After a prior life as a r
 
 <!--START_SECTION:badges-->
 <p align="left">
+  <a href="https://www.credly.com/badges/65e304ed-566b-4c71-842c-40feed8aa48b"><img src="badges/db47b32f.png" alt="Getting Started with Threat Intelligence and Hunting" height="88"></a>
+  <a href="https://www.credly.com/badges/62e6157c-9428-4afe-983d-2afa4a691adb"><img src="badges/07b6197f.png" alt="Quantum-Safe Encryption Essentials" height="88"></a>
+  <a href="https://www.credly.com/badges/2db971e0-e3c9-450f-9202-9b22b09cda22"><img src="badges/9764510b.png" alt="Statistics 101" height="88"></a>
+  <a href="https://www.credly.com/badges/d00b08b8-1248-4ca4-9bba-34cd9328864a"><img src="badges/18ea2a54.png" alt="Quantum Machine Learning" height="88"></a>
+  <a href="https://www.credly.com/badges/5afc7b72-da53-41be-b225-682fdea967c3"><img src="badges/17a04aa8.png" alt="IBM MQ on AWS Cloud Developer Essentials" height="88"></a>
+  <a href="https://www.credly.com/badges/7fca0c1e-22ee-4d1e-ab70-58b1b0070cec"><img src="badges/46192acf.png" alt="Cloud Native Starter Level 1" height="88"></a>
+  <a href="https://www.credly.com/badges/7f1154ae-15c7-4b73-a561-4f8ce03c86b5"><img src="badges/d500cee1.png" alt="IBM Ecosystem Cloud Native Developer" height="88"></a>
+  <a href="https://www.credly.com/badges/af8f15c3-51d9-4390-b7b1-7f706912a735"><img src="badges/e3fde88e.png" alt="IBM App Connect Enterprise as a Service Essentials" height="88"></a>
   <a href="https://www.credly.com/badges/5212c05a-ada1-494f-9496-b4ff62590d94"><img src="badges/1e918c1f.png" alt="Artificial Intelligence Fundamentals with Capstone Project" height="88"></a>
   <a href="https://www.credly.com/badges/357d4399-8cd4-485a-b217-e30518e87db3"><img src="badges/3e7b4dd8.png" alt="Enterprise Design Thinking Practitioner" height="88"></a>
   <a href="https://www.credly.com/badges/e15468db-c158-45a7-bbe6-fe160086dc01"><img src="badges/a8ffdc7e.png" alt="IBM Garage Essentials" height="88"></a>
