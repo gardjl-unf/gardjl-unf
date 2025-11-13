@@ -28,6 +28,9 @@ I've been working on computers since I was a teenager. After a prior life as a r
 
 <!--START_SECTION:badges-->
 <p align="left">
+  <a href="https://www.credly.com/badges/1624bc9a-0bd5-4311-a368-cb15f9b97d51"><img src="badges/0d0b923e.png" alt="IBM Garage Foundation" height="88"></a>
+  <a href="https://www.credly.com/badges/3f8e6c4d-f30e-4cd3-9283-2a4e828ce7b8"><img src="badges/f3157f67.png" alt="AWS Knowledge: Cloud Essentials - Training Badge" height="88"></a>
+  <a href="https://www.credly.com/badges/bbbb9ea4-6515-4f34-bf67-d0eb54f1ca40"><img src="badges/a0d5d925.png" alt="Automatic Binary Optimizer for z/OS Essentials V2" height="88"></a>
   <a href="https://www.credly.com/badges/65e304ed-566b-4c71-842c-40feed8aa48b"><img src="badges/db47b32f.png" alt="Getting Started with Threat Intelligence and Hunting" height="88"></a>
   <a href="https://www.credly.com/badges/62e6157c-9428-4afe-983d-2afa4a691adb"><img src="badges/07b6197f.png" alt="Quantum-Safe Encryption Essentials" height="88"></a>
   <a href="https://www.credly.com/badges/2db971e0-e3c9-450f-9202-9b22b09cda22"><img src="badges/9764510b.png" alt="Statistics 101" height="88"></a>
