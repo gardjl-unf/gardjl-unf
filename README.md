@@ -28,6 +28,8 @@ I've been working on computers since I was a teenager. After a prior life as a r
 
 <!--START_SECTION:badges-->
 <p align="left">
+  <a href="https://www.credly.com/badges/4d329805-8d3b-49f6-937e-fe75d7d30039"><img src="badges/d524f461.png" alt="Fortinet FortiGate 7.6 Operator" height="88"></a>
+  <a href="https://www.credly.com/badges/4f520985-a41b-4070-b8ac-b4311367f890"><img src="badges/d2630141.png" alt="Fortinet Certified Associate Cybersecurity" height="88"></a>
   <a href="https://www.credly.com/badges/8ee9215d-6ee9-486e-990b-9e608ffb35c3"><img src="badges/53754685.png" alt="Getting Started in Cybersecurity 3.0" height="88"></a>
   <a href="https://www.credly.com/badges/d4e683af-b6f1-40bb-a76c-dfa8e19c58b9"><img src="badges/6cf0b2a6.png" alt="Introduction to the Threat Landscape 3.0" height="88"></a>
   <a href="https://www.credly.com/badges/6f4f14a6-7eef-4b03-8ba6-2b1cf10fdaf9"><img src="badges/d9b9767c.png" alt="Generative AI Essentials: Using LLMs to Work with Data" height="88"></a>
@@ -39,7 +41,7 @@ I've been working on computers since I was a teenager. After a prior life as a r
   <a href="https://www.credly.com/badges/0d260bfe-46dd-489b-8161-f45ac6a59f58"><img src="badges/dce97375.png" alt="Ansible for IBM Z &amp; LinuxONE Foundations" height="88"></a>
   <a href="https://www.credly.com/badges/62b35e7d-4a71-48e3-9dff-e59cbc9cedbe"><img src="badges/695d7680.png" alt="Linux on IBM LinuxONE Intermediate" height="88"></a>
   <a href="https://www.credly.com/badges/7e040583-e9ec-4711-8f94-36313a1d1571"><img src="badges/473ac7bd.png" alt="IMS System Programming: Database and Transaction Management" height="88"></a>
-  <a href="https://www.credly.com/badges/34ff3afd-3d03-4fae-a9a9-9cbb377ee0eb"><img src="badges/f6d6902a.png" alt="Fortinet Certified Fundamentals Cybersecurity" height="88"></a>
+  <a href="https://www.credly.com/badges/eb23ab22-6d31-4418-9f7a-21232e64b40e"><img src="badges/f6d6902a.png" alt="Fortinet Certified Fundamentals Cybersecurity" height="88"></a>
   <a href="https://www.credly.com/badges/1624bc9a-0bd5-4311-a368-cb15f9b97d51"><img src="badges/0d0b923e.png" alt="IBM Garage Foundation" height="88"></a>
   <a href="https://www.credly.com/badges/3f8e6c4d-f30e-4cd3-9283-2a4e828ce7b8"><img src="badges/f3157f67.png" alt="AWS Knowledge: Cloud Essentials - Training Badge" height="88"></a>
   <a href="https://www.credly.com/badges/bbbb9ea4-6515-4f34-bf67-d0eb54f1ca40"><img src="badges/a0d5d925.png" alt="Automatic Binary Optimizer for z/OS Essentials V2" height="88"></a>
