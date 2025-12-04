@@ -28,8 +28,14 @@ I've been working on computers since I was a teenager. After a prior life as a r
 
 <!--START_SECTION:badges-->
 <p align="left">
+  <a href="https://www.credly.com/badges/27d1e88a-b027-4f57-afe4-628ab8fdfe75"><img src="badges/313283d4.png" alt="IBM Db2 for z/OS V12.x Database Administration - Intermediate" height="88"></a>
+  <a href="https://www.credly.com/badges/9302a3a8-ee38-4b09-bdfe-d182343f63d7"><img src="badges/645a58c0.png" alt="z/OS DFSMS Academy - DFSMShsm Explorer" height="88"></a>
   <a href="https://www.credly.com/badges/4d329805-8d3b-49f6-937e-fe75d7d30039"><img src="badges/d524f461.png" alt="Fortinet FortiGate 7.6 Operator" height="88"></a>
   <a href="https://www.credly.com/badges/4f520985-a41b-4070-b8ac-b4311367f890"><img src="badges/d2630141.png" alt="Fortinet Certified Associate Cybersecurity" height="88"></a>
+  <a href="https://www.credly.com/badges/8f47247b-70c0-428a-8487-bbddbc4de8a1"><img src="badges/db9c611b.png" alt="IBM Z Day 2025 - AI &amp; Data" height="88"></a>
+  <a href="https://www.credly.com/badges/db1fb896-14c9-4268-9fe9-c942d8568458"><img src="badges/dba379b7.png" alt="IBM Z Day 2025 - IBM Z Skills" height="88"></a>
+  <a href="https://www.credly.com/badges/c6cf862a-4b50-41dd-a600-fef5959d675d"><img src="badges/a104d822.png" alt="IBM Z Day 2025 - Modernization" height="88"></a>
+  <a href="https://www.credly.com/badges/76bb3211-3fc8-4f64-bd13-a30430273373"><img src="badges/eadb0a27.png" alt="IBM Z Day 2025 - Security" height="88"></a>
   <a href="https://www.credly.com/badges/8ee9215d-6ee9-486e-990b-9e608ffb35c3"><img src="badges/53754685.png" alt="Getting Started in Cybersecurity 3.0" height="88"></a>
   <a href="https://www.credly.com/badges/d4e683af-b6f1-40bb-a76c-dfa8e19c58b9"><img src="badges/6cf0b2a6.png" alt="Introduction to the Threat Landscape 3.0" height="88"></a>
   <a href="https://www.credly.com/badges/6f4f14a6-7eef-4b03-8ba6-2b1cf10fdaf9"><img src="badges/d9b9767c.png" alt="Generative AI Essentials: Using LLMs to Work with Data" height="88"></a>
