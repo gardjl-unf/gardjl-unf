@@ -28,6 +28,15 @@ I've been working on computers since I was a teenager. After a prior life as a r
 
 <!--START_SECTION:badges-->
 <p align="left">
+  <a href="https://www.credly.com/badges/11e7a396-9a6d-4a75-a2d8-2e75ff7b53bd"><img src="badges/01e5f324.png" alt="Career Management Essentials" height="88"></a>
+  <a href="https://www.credly.com/badges/497d23ec-f3f8-4ab9-811a-9c31bdcdf756"><img src="badges/19ce6a5d.png" alt="Applied Data Science with Python - Level 2" height="88"></a>
+  <a href="https://www.credly.com/badges/b3c6c84e-7970-4b5a-b1ae-6c785750ad5c"><img src="badges/97b84131.png" alt="Data Visualization Using Python" height="88"></a>
+  <a href="https://www.credly.com/badges/870fa5a8-1fc4-4c80-96d8-143d56fffbf3"><img src="badges/c63b2fed.png" alt="Machine Learning with Python - Level 1" height="88"></a>
+  <a href="https://www.credly.com/badges/2779c542-f4db-4235-8e58-0a7755b14b11"><img src="badges/2c5dca8a.png" alt="Hadoop Foundations - Level 1" height="88"></a>
+  <a href="https://www.credly.com/badges/48629b0e-f2fa-4558-b9a5-4dc8b7b0c027"><img src="badges/13f674c1.png" alt="Data Analysis Using Python" height="88"></a>
+  <a href="https://www.credly.com/badges/71c2ebaa-30e9-4a2a-9a98-d1f8c48acc3e"><img src="badges/dcd5222e.png" alt="Data Science Foundations - Level 1" height="88"></a>
+  <a href="https://www.credly.com/badges/73ae6dfc-f8e8-449e-b118-2212082e754f"><img src="badges/77be2d02.png" alt="Big Data Foundations - Level 1" height="88"></a>
+  <a href="https://www.credly.com/badges/bdaa0050-8447-4651-b0ea-64b359f0e3f1"><img src="badges/aced4a2e.png" alt="Python for Data Science" height="88"></a>
   <a href="https://www.credly.com/badges/27d1e88a-b027-4f57-afe4-628ab8fdfe75"><img src="badges/313283d4.png" alt="IBM Db2 for z/OS V12.x Database Administration - Intermediate" height="88"></a>
   <a href="https://www.credly.com/badges/9302a3a8-ee38-4b09-bdfe-d182343f63d7"><img src="badges/645a58c0.png" alt="z/OS DFSMS Academy - DFSMShsm Explorer" height="88"></a>
   <a href="https://www.credly.com/badges/4d329805-8d3b-49f6-937e-fe75d7d30039"><img src="badges/d524f461.png" alt="Fortinet FortiGate 7.6 Operator" height="88"></a>
