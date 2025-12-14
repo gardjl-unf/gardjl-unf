@@ -28,6 +28,9 @@ I've been working on computers since I was a teenager. After a prior life as a r
 
 <!--START_SECTION:badges-->
 <p align="left">
+  <a href="https://www.credly.com/badges/386e7377-6ca3-420b-859c-f74a5dfbc95c"><img src="badges/1a331895.png" alt="LFS101: Introduction to Linux" height="88"></a>
+  <a href="https://www.credly.com/badges/97e29bce-8623-4fcd-854a-b7baa549c4b4"><img src="badges/7620b4b6.png" alt="LFS151: Introduction to Cloud Infrastructure Technologies" height="88"></a>
+  <a href="https://www.credly.com/badges/f69fb0bb-23f0-4699-91bc-0700c1f1b7d9"><img src="badges/8e5b0fbf.png" alt="LFS158: Introduction to Kubernetes" height="88"></a>
   <a href="https://www.credly.com/badges/11e7a396-9a6d-4a75-a2d8-2e75ff7b53bd"><img src="badges/01e5f324.png" alt="Career Management Essentials" height="88"></a>
   <a href="https://www.credly.com/badges/497d23ec-f3f8-4ab9-811a-9c31bdcdf756"><img src="badges/19ce6a5d.png" alt="Applied Data Science with Python - Level 2" height="88"></a>
   <a href="https://www.credly.com/badges/b3c6c84e-7970-4b5a-b1ae-6c785750ad5c"><img src="badges/97b84131.png" alt="Data Visualization Using Python" height="88"></a>
