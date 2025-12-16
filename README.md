@@ -28,6 +28,13 @@ I've been working on computers since I was a teenager. After a prior life as a r
 
 <!--START_SECTION:badges-->
 <p align="left">
+  <a href="https://www.credly.com/badges/8e92bef0-7054-4128-a759-5b72886a69b3"><img src="badges/e034c792.png" alt="Data Science Tools" height="88"></a>
+  <a href="https://www.credly.com/badges/e3f94db5-26ac-4f80-890c-d77630b6935d"><img src="badges/31c5ae61.png" alt="R for Data Science" height="88"></a>
+  <a href="https://www.credly.com/badges/2ec3ec34-6b7b-4dda-9dbb-4d2e5ba5d921"><img src="badges/d746aa5f.png" alt="LFEL1014: Scaling Cloud Native Applications with KEDA" height="88"></a>
+  <a href="https://www.credly.com/badges/0fa6346f-a4a4-4582-8199-47da2055d4f1"><img src="badges/04feeecd.png" alt="LFS157: Introduction to Serverless on Kubernetes" height="88"></a>
+  <a href="https://www.credly.com/badges/45569ddd-56f8-45ae-88fc-03514a374505"><img src="badges/7f78aa31.png" alt="LFS162: Introduction to DevOps and Site Reliability Engineering" height="88"></a>
+  <a href="https://www.credly.com/badges/a826924a-9523-462e-b873-8a28838956d7"><img src="badges/d2388be3.png" alt="LFS167: Introduction to Jenkins" height="88"></a>
+  <a href="https://www.credly.com/badges/91f15d3f-49d0-4aaf-a33d-dd8fa11307a0"><img src="badges/b0727ebc.png" alt="LFS169: Introduction to GitOps" height="88"></a>
   <a href="https://www.credly.com/badges/386e7377-6ca3-420b-859c-f74a5dfbc95c"><img src="badges/1a331895.png" alt="LFS101: Introduction to Linux" height="88"></a>
   <a href="https://www.credly.com/badges/97e29bce-8623-4fcd-854a-b7baa549c4b4"><img src="badges/7620b4b6.png" alt="LFS151: Introduction to Cloud Infrastructure Technologies" height="88"></a>
   <a href="https://www.credly.com/badges/f69fb0bb-23f0-4699-91bc-0700c1f1b7d9"><img src="badges/8e5b0fbf.png" alt="LFS158: Introduction to Kubernetes" height="88"></a>
