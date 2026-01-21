@@ -28,6 +28,10 @@ I've been working on computers since I was a teenager. After a prior life as a r
 
 <!--START_SECTION:badges-->
 <p align="left">
+  <a href="https://www.credly.com/badges/b5b7abc2-55a5-4f5b-ac85-7a6ed9d34724"><img src="badges/7ba11e29.png" alt="Working in a Digital World: Professional Skills" height="88"></a>
+  <a href="https://www.credly.com/badges/0340a34c-ac95-441c-9677-c32236f1139e"><img src="badges/f397ef87.png" alt="AI Fundamentals: Foundations for Understanding AI" height="88"></a>
+  <a href="https://www.credly.com/badges/6bbf8877-3494-474c-81ef-953e9e5ed709"><img src="badges/7343424e.png" alt="IBM Z Resiliency" height="88"></a>
+  <a href="https://www.credly.com/badges/54563729-cbb0-4a2f-accf-666e64855a9c"><img src="badges/6c44241a.png" alt="Dependency Based Build Fundamentals" height="88"></a>
   <a href="https://www.credly.com/badges/8e92bef0-7054-4128-a759-5b72886a69b3"><img src="badges/e034c792.png" alt="Data Science Tools" height="88"></a>
   <a href="https://www.credly.com/badges/e3f94db5-26ac-4f80-890c-d77630b6935d"><img src="badges/31c5ae61.png" alt="R for Data Science" height="88"></a>
   <a href="https://www.credly.com/badges/2ec3ec34-6b7b-4dda-9dbb-4d2e5ba5d921"><img src="badges/d746aa5f.png" alt="LFEL1014: Scaling Cloud Native Applications with KEDA" height="88"></a>
